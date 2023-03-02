@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model MessageHeader {
+  id                       Int      @id @default(autoincrement())
+  messageVersion           Int
+  senderCode               Int
+  messageNumber            Int
+  dateOfCreation           DateTime
+  numberOfRecords          Int
+  settlementAgentUNUR      Int
+  serviceProviderAccount   Int
+  serviceProviderBankUNUR  Int
+  serviceProviderAccNumber String   @db.VarChar(28)
+  paymentDocumentNumber    Int
+  dateOfFundsTransfer      DateTime
+  currencyCode             Int
+  totalAmountOfOperations  String   @db.VarChar(16)
+  totalAmountOfPenalty     String   @db.VarChar(16)
+  transferredAmount        String   @db.VarChar(16)
+  elementAgentBankUNUR     Int
+  elementAgentAccNumber    String   @db.VarChar(28)
+  budgetPaymentCode        String?  @db.VarChar(5)
+  totalPaymentToBudget     String?  @db.VarChar(12)
+  withheldRemuneration     String?  @db.VarChar(12)
+  payers                   Payer[]
+}
+
+model Payer {
+  id                 Int            @id @default(autoincrement())
+  recordNumber       Int
+  serviceNumber      String?        @db.VarChar(8)
+  accountNumber      String         @db.VarChar(30)
+  consumerName       String?
+  consumerAddress    String?
+  paymentPeriod      DateTime?
+  totalPaymentAmount Float
+  penaltyAmount      Float
+  paidAmount         Float
+  transactionDate    DateTime
+  meterReadings      String
+  demandDate         DateTime?
+  centralOpNumber    Decimal
+  agentOpNumber      Decimal
+  terminalId         String         @db.VarChar(30)
+  authMethod         String?        @db.VarChar(10)
+  additionalDetails  String?
+  additionalData     String?
+  authDeviceId       String?        @db.VarChar(30)
+  deviceType         Int
+  budgetPayment      String?        @db.VarChar(12)
+  rewardAmount       String?        @db.VarChar(12)
+  MessageHeader      MessageHeader? @relation(fields: [messageHeaderId], references: [id])
+  messageHeaderId    Int?
+}
